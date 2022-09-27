@@ -31,8 +31,9 @@
   <ItemGroup>
     <!-- Private=false prevents the reference from being copied to the output directory -->
     <Reference Include="Astrogator">
-      <HintPath>..\..\Astrogator\Source\KSP_GameData\Astrogator\Plugins\Astrogator.dll</HintPath>
-    </Reference>
+      <HintPath>KSP_GameData\Astrogator\Plugins\Astrogator.dll</HintPath>
+      <Private>false</Private>
+	</Reference>
     <Reference Include="System">
       <HintPath>KSP_Data\Managed\System.dll</HintPath>
       <Private>false</Private>

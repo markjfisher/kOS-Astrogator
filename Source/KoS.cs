@@ -2,11 +2,11 @@ using kOS.AddOns;
 using kOS.Safe.Utilities;
 using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
-using UnityEngine;
-using System;
 using kOS.Suffixed;
 using kOS;
 using Astrogator;
+using System.Reflection;
+using System.Linq;
 
 namespace AstrogatorKOS {
     using static ViewTools;
@@ -15,7 +15,7 @@ namespace AstrogatorKOS {
     /// kOS integration for Astrogator
     /// </summary>
     [kOSAddon("ASTROGATOR")]
-    [KOSNomenclature("ASTROGATORAddon")]
+    [KOSNomenclature("AstrogatorAddon")]
     public class KOSAstrogator : Addon
     {
         /// <summary>
@@ -27,20 +27,35 @@ namespace AstrogatorKOS {
             InitializeSuffixes();
         }
 
+        /// <inheritdoc/>
+        public override BooleanValue Available()
+        {
+            return IsModInstalled("Astrogator");
+        }
+
         private void InitializeSuffixes()
         {
             AddSuffix("version", suffixToAdd: new NoArgsSuffix<StringValue>(PrintAstrogatorVersion));
         }
 
+        #region suffix_functions
         private StringValue PrintAstrogatorVersion()
         {
             return versionString;
         }
+        #endregion
 
-        /// <inheritdoc/>
-        public override BooleanValue Available()
-        {
-            return true;
-        }
+        #region internal_function
+    		///<summary>
+		    /// checks if the mod with "assemblyName" is loaded into KSP. Taken from KOS-Scansat
+		    ///</summary>
+		    internal static bool IsModInstalled(string assemblyName)
+		    {
+			    Assembly assembly = (from a in AssemblyLoader.loadedAssemblies
+								      where a.name.ToLower().Equals(assemblyName.ToLower())
+								      select a).FirstOrDefault().assembly;
+			    return assembly != null;
+		    }
+        #endregion
     }
 }

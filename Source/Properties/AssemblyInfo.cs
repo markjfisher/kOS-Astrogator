@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("AstrogatorKOS")]
 [assembly: AssemblyDescription("KOS bridge for Astrogator")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("markjfisher")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AstrogatorKOS")]
-[assembly: AssemblyCopyright("Copyright © 2022")]
+[assembly: AssemblyCopyright("Copyright © Mark Fisher 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,3 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: KSPAssemblyDependency("kOS", 1, 3)]

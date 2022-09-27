@@ -1,0 +1,39 @@
+{
+    "spec_version" : "v1.4",
+    "identifier"   : "AstrogatorKOS",
+    "$kref"        : "#/ckan/github/markjfisher/AstrogatorKOS",
+    "$vref"        : "#/ckan/ksp-avc",
+    "abstract"     : "A mod to allow Astrogator functionality in kOS.",
+    "author"       : [ "markjfisher" ],
+    "license"      : "GPL-3.0",
+
+    "resources":
+    {
+    	"homepage"     : "",
+        "bugtracker"   : "https://github.com/markjfisher/AstrogatorKOS/issues",
+        "repository"   : "https://github.com/markjfisher/AstrogatorKOS"
+    },
+
+    "depends":
+    [
+        { "name": "Astrogator" },
+        { "name": "kOS" }
+    ],
+
+    "suggests":
+    [],
+    
+    "supports":
+    [],
+    
+    "conflicts":
+    [],
+
+    "install":
+    [
+        {
+            "file": "GameData/AstrogatorKOS",
+            "install_to": "GameData"
+        }
+    ]
+}
