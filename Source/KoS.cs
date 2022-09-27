@@ -36,6 +36,7 @@ namespace AstrogatorKOS {
         private void InitializeSuffixes()
         {
             AddSuffix("version", suffixToAdd: new NoArgsSuffix<StringValue>(PrintAstrogatorVersion));
+            AddSuffix("create", suffixToAdd: new TwoArgsSuffix<StringValue, BodyTarget, BodyTarget>(CreateTransfer));
         }
 
         #region suffix_functions
@@ -43,19 +44,28 @@ namespace AstrogatorKOS {
         {
             return versionString;
         }
+
+        private StringValue CreateTransfer(BodyTarget src, BodyTarget dest)
+        {
+            TransferModel model = new TransferModel(src.Target, dest.Target);
+            model.CalculateEjectionBurn();
+            model.CalculatePlaneChangeBurn();
+            model.CreateManeuvers();
+            return model.ToString();
+        }
         #endregion
 
         #region internal_function
-    		///<summary>
-		    /// checks if the mod with "assemblyName" is loaded into KSP. Taken from KOS-Scansat
-		    ///</summary>
-		    internal static bool IsModInstalled(string assemblyName)
-		    {
-			    Assembly assembly = (from a in AssemblyLoader.loadedAssemblies
-								      where a.name.ToLower().Equals(assemblyName.ToLower())
-								      select a).FirstOrDefault().assembly;
-			    return assembly != null;
-		    }
+        ///<summary>
+        /// checks if the mod with "assemblyName" is loaded into KSP. Taken from KOS-Scansat
+        ///</summary>
+        internal static bool IsModInstalled(string assemblyName)
+        {
+          Assembly assembly = (from a in AssemblyLoader.loadedAssemblies
+            where a.name.ToLower().Equals(assemblyName.ToLower())
+            select a).FirstOrDefault().assembly;
+          return assembly != null;
+        }
         #endregion
     }
 }
