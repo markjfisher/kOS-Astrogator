@@ -7,6 +7,7 @@ using kOS;
 using Astrogator;
 using System.Reflection;
 using System.Linq;
+using kOS.Screen;
 
 namespace AstrogatorKOS {
     using static ViewTools;
@@ -35,23 +36,68 @@ namespace AstrogatorKOS {
 
         private void InitializeSuffixes()
         {
-            AddSuffix("version", suffixToAdd: new NoArgsSuffix<StringValue>(PrintAstrogatorVersion));
-            AddSuffix("create", suffixToAdd: new TwoArgsSuffix<StringValue, BodyTarget, BodyTarget>(CreateTransfer));
+            AddSuffix("help", suffixToAdd: new NoArgsVoidSuffix(PrintHelp));
+            AddSuffix("version", suffixToAdd: new NoArgsSuffix<StringValue>(GetAstrogatorVersion));
+            AddSuffix("create", suffixToAdd: new VarArgsSuffix<Node, Structure>(CreateTransfer));
         }
 
         #region suffix_functions
-        private StringValue PrintAstrogatorVersion()
+        private void PrintHelp()
+        {
+            shared.Screen.Print("AstrogatorKOS Help: addons:astrogator:<cmd>");
+            shared.Screen.Print("     help: this help message");
+            shared.Screen.Print("  version: return Astrogator version string");
+            shared.Screen.Print("   create: [dest, genPlaneChange] create nodes to get to dest body");
+            shared.Screen.Print("           dest is any body (required),");
+            shared.Screen.Print("           genPlaneChange generates additional node (def: false)");
+        }
+
+        private StringValue GetAstrogatorVersion()
         {
             return versionString;
         }
 
-        private StringValue CreateTransfer(BodyTarget src, BodyTarget dest)
+        private Node CreateTransfer(params Structure[] args)
         {
-            TransferModel model = new TransferModel(src.Target, dest.Target);
+            // This is an exception
+            // throw new kOS.Safe.Exceptions.KOSException("invalid resource type");
+
+            BodyTarget dest = (BodyTarget) args[0];
+            bool paramGeneratePlaneChangeBurns = false;
+            if (args.Length > 1) paramGeneratePlaneChangeBurns = (BooleanValue)args[1];
+
+            // store old values
+            bool autoTargetDestination = Settings.Instance.AutoTargetDestination;
+            bool generatePlaneChangeBurns = Settings.Instance.GeneratePlaneChangeBurns;
+            bool autoEditEjectionNode = Settings.Instance.AutoEditEjectionNode;
+            bool autoEditPlaneChangeNode = Settings.Instance.AutoEditPlaneChangeNode;
+            bool autoFocusDestination = Settings.Instance.AutoFocusDestination;
+            bool autoSetSAS = Settings.Instance.AutoSetSAS;
+
+            // set base flags off
+            Settings.Instance.AutoTargetDestination = false;
+            Settings.Instance.AutoEditEjectionNode = false;
+            Settings.Instance.AutoEditPlaneChangeNode = false;
+            Settings.Instance.AutoFocusDestination = false;
+            Settings.Instance.AutoSetSAS = false;
+
+            // take from config
+            Settings.Instance.GeneratePlaneChangeBurns = paramGeneratePlaneChangeBurns;
+
+            TransferModel model = new TransferModel(shared.Vessel, dest.Target);
             model.CalculateEjectionBurn();
-            model.CalculatePlaneChangeBurn();
+            if (generatePlaneChangeBurns) model.CalculatePlaneChangeBurn();
             model.CreateManeuvers();
-            return model.ToString();
+
+            // restore old values
+            Settings.Instance.AutoTargetDestination = autoTargetDestination;
+            Settings.Instance.GeneratePlaneChangeBurns = generatePlaneChangeBurns;
+            Settings.Instance.AutoEditEjectionNode = autoEditEjectionNode;
+            Settings.Instance.AutoEditPlaneChangeNode = autoEditPlaneChangeNode;
+            Settings.Instance.AutoFocusDestination = autoFocusDestination;
+            Settings.Instance.AutoSetSAS = autoSetSAS;
+
+            return Node.FromExisting(shared.Vessel, model.ejectionBurn.node, shared);
         }
         #endregion
 
