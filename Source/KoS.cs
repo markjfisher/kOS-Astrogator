@@ -36,20 +36,22 @@ namespace AstrogatorKOS {
 
         private void InitializeSuffixes()
         {
-            AddSuffix("help", suffixToAdd: new NoArgsVoidSuffix(PrintHelp));
-            AddSuffix("version", suffixToAdd: new NoArgsSuffix<StringValue>(GetAstrogatorVersion));
-            AddSuffix("create", suffixToAdd: new VarArgsSuffix<Node, Structure>(CreateTransfer));
+            AddSuffix("help", new NoArgsVoidSuffix(PrintHelp));
+            AddSuffix("version", new NoArgsSuffix<StringValue>(GetAstrogatorVersion));
+            AddSuffix("create", new VarArgsSuffix<Node, Structure>(CreateTransfer));
+            AddSuffix("ejectionBurn", new OneArgsSuffix<BurnModelStructure, BodyTarget>(CalculateEjectionBurn));
         }
 
         #region suffix_functions
         private void PrintHelp()
         {
             shared.Screen.Print("AstrogatorKOS Help: addons:astrogator:<cmd>");
-            shared.Screen.Print("     help: this help message");
-            shared.Screen.Print("  version: return Astrogator version string");
-            shared.Screen.Print("   create: [dest, genPlaneChange] create nodes to get to dest body");
-            shared.Screen.Print("           dest is any body (required),");
-            shared.Screen.Print("           genPlaneChange generates additional node (def: false)");
+            shared.Screen.Print("        help: this help message");
+            shared.Screen.Print("     version: return Astrogator version string");
+            shared.Screen.Print("      create: [dest, genPlaneChange] create nodes to get to dest body");
+            shared.Screen.Print("              dest is any body (required),");
+            shared.Screen.Print("              genPlaneChange generates additional node (def: false)");
+            shared.Screen.Print("ejectionBurn: Return BurnModel for calculated ejection Burn.");
         }
 
         private StringValue GetAstrogatorVersion()
@@ -97,7 +99,16 @@ namespace AstrogatorKOS {
             Settings.Instance.AutoFocusDestination = autoFocusDestination;
             Settings.Instance.AutoSetSAS = autoSetSAS;
 
+
+            if (model.ejectionBurn == null || model.ejectionBurn.node == null) return new Node(Planetarium.GetUniversalTime(), 0, 0, 0, shared);
             return Node.FromExisting(shared.Vessel, model.ejectionBurn.node, shared);
+        }
+
+        private BurnModelStructure CalculateEjectionBurn(BodyTarget dest)
+        {
+            TransferModel model = new TransferModel(shared.Vessel, dest.Target);
+            model.CalculateEjectionBurn();
+            return BurnModelStructure.Create(model.ejectionBurn, shared);
         }
         #endregion
 
