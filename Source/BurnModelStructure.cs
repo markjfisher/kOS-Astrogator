@@ -67,13 +67,13 @@ namespace kOS.AddOns.kOSAstrogator
         public override string ToString()
         {
             if (model == null) return "BurnModel(null)";
-            return string.Format("BurnModel(pro: {0}, norm: {1}, rad: {2}, dv: {3}, dur: {4}, at: {5})",
+            return string.Format("BurnModel(attime: {0}, prograde: {1}, normal: {2}, radial: {3}, totaldv: {4}, duration: {5})",
+                model.atTime,
                 model.prograde,
                 model.normal,
                 model.radial,
                 model.totalDeltaV,
-                CalculateDuration().GetDoubleValue(),
-                model.atTime
+                CalculateDuration().GetDoubleValue()
             );
 
         }

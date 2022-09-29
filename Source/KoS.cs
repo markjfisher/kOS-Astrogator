@@ -108,7 +108,7 @@ namespace kOS.AddOns.kOSAstrogator {
             model.CalculateEjectionBurn();
             model.CalculatePlaneChangeBurn();
             burns.Add(BurnModelStructure.Create(model.ejectionBurn, shared));
-            burns.Add(BurnModelStructure.Create(model.planeChangeBurn, shared));
+            if (model.planeChangeBurn != null) burns.Add(BurnModelStructure.Create(model.planeChangeBurn, shared));
             return burns;
         }
         #endregion
