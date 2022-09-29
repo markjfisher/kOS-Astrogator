@@ -3,9 +3,14 @@
     "identifier"   : "kOS-Astrogator",
     "$kref"        : "#/ckan/github/markjfisher/kOS-Astrogator",
     "$vref"        : "#/ckan/ksp-avc",
-    "abstract"     : "A mod to allow Astrogator functionality in kOS.",
+    "abstract"     : "Astrogator functionality in kOS.",
+    "description"  : "Provides access to Astrogator functionality from withing kOS scripts using the addons interface. Either generate the same transfer nodes directly from within your scripts using Astrogator's powerful functionality, or get information about transfers that can be used to aid your kOS scripts.",
     "author"       : [ "markjfisher" ],
-    "license"      : "GPL-3.0",
+    "license": "GPL-3.0",
+
+    "tags": [
+        "plugin"
+    ],
 
     "resources":
     {
@@ -19,15 +24,6 @@
         { "name": "Astrogator" },
         { "name": "kOS" }
     ],
-
-    "suggests":
-    [],
-    
-    "supports":
-    [],
-    
-    "conflicts":
-    [],
 
     "install":
     [
