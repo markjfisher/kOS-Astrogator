@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-print addons:astrogator:help.
+addons:astrogator:help.
 ```
 
 ## Creating and calculating Transfer Burns
@@ -26,6 +26,7 @@ It is possible to get the burn data for a transfer without creating the nodes wi
 
 ```
 set nodeList to addons:astrogator:calculateBurns(Mun).
+print nodeList.
 ```
 
 This will produce a list of `BurnModel` objects (up to 2). The first is the starting burn,
@@ -41,3 +42,10 @@ It contains fields `atTime`, `prograde`, `normal`, `radial`, `totalDV`, `duratio
 
 The function `toNode()` will create an ingame node from the data.
 
+Example usage:
+```
+set nodeList to addons:astrogator:calculateBurns(Mun).
+print nodeList[0].
+set dv0 to nodeList[0]:totalDV.
+set newNode to nodeList[0]:toNode().
+```

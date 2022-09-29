@@ -2,42 +2,31 @@
 
 [Astrogator](https://github.com/HebaruSan/Astrogator) functionality in kOS.
 
-## Usage
+See [Release Readme](GameData/kOS-Astrogator/README.md) for mod usage information.
+
+## Building
+
+### Visual Studio 2022 in Windows
+
+Create 2 symlinks in [Source](Source) as follows:
 
 ```
-print addons:astrogator:help.
+mklink /j Source\KSP_Data "C:\your\path\to\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data"
+mklink /j Source\KSP_GameData "C:\your\path\to\dev\mods\"
 ```
 
-## Creating and calculating Transfer Burns
+The second link should go to a directory with any mods required for compiling this source, simply unpack
+the mods as normal from installation zips, or copy them from KSP's mods folder.
 
-### Creating burn maneuver nodes to a target
+Mods required are:
+- Astrogator
+- kOS
 
-```
-addons:astrogator:create(Mun).
-```
+Warning: If you link this to your main KSP mods folder, you may get compilation issues, as some mods
+have Assembly files included in their distribution, that will break the build of this module.
+That took me a while to find :sad-panda:.
 
-This will create the main transfer and a plane change node, unless a second arg of `false` is given,
-which will then only create the primary burn node.
+Now the base game libraries and mods are available, run Visual Studio 2022, and run a realease build.
 
-
-### Calculating burn data (no nodes)
-
-It is possible to get the burn data for a transfer without creating the nodes with:
-
-```
-set nodeList to addons:astrogator:calculateBurns(Mun).
-```
-
-This will produce a list of `BurnModel` objects (up to 2). The first is the starting burn,
-the second (if present) is the plane change burn.
-
-## Structures
-
-### BurnModel
-
-This is a class representing the Burn without having to create a node.
-
-It contains fields `atTime`, `prograde`, `normal`, `radial`, `totalDV`, `duration`.
-
-The function `toNode()` will create an ingame node from the data.
-
+You can use something like [this copy script](copyToKSP.bat) to copy the distribution to your KSP folder,
+but you will have to change the various paths in it to suit your own installation.
