@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AstrogatorKOS")]
-[assembly: AssemblyDescription("KOS bridge for Astrogator")]
+[assembly: AssemblyTitle("kOS-Astrogator")]
+[assembly: AssemblyDescription("kOS interface for Astrogator")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AstrogatorKOS")]
+[assembly: AssemblyProduct("kOS-Astrogator")]
 [assembly: AssemblyCopyright("Copyright © Mark Fisher 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -33,4 +32,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
+
+[assembly: KSPAssembly("kOS-Astrogator", 0, 1)]
 [assembly: KSPAssemblyDependency("kOS", 1, 3)]
+[assembly: KSPAssemblyDependency("Astrogator", 0, 10)]

@@ -1,11 +1,10 @@
 ﻿using Astrogator;
-using kOS;
 using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Utilities;
 using kOS.Suffixed;
 
-namespace AstrogatorKOS
+namespace kOS.AddOns.kOSAstrogator
 {
     /// <summary>
     /// A structure wrapper for BurnModel to allow kOS to interact with.
@@ -62,6 +61,41 @@ namespace AstrogatorKOS
             if (duration == double.NaN) return -2.0;                  // Can't burn at all
             if (duration == double.PositiveInfinity) return -3.0;     // Not enough Fuel
             return duration.Value;
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            if (model == null) return "BurnModel(null)";
+            return string.Format("BurnModel(pro: {0}, norm: {1}, rad: {2}, dv: {3}, dur: {4}, at: {5})",
+                model.prograde,
+                model.normal,
+                model.radial,
+                model.totalDeltaV,
+                CalculateDuration().GetDoubleValue(),
+                model.atTime
+            );
+
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            BurnModelStructure bms = (BurnModelStructure)obj;
+            return bms.model.atTime == model.atTime &&
+                bms.model.prograde == model.prograde &&
+                bms.model.normal == model.normal &&
+                bms.model.radial == model.radial &&
+                bms.model.totalDeltaV == model.totalDeltaV;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

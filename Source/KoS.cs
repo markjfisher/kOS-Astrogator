@@ -1,15 +1,12 @@
-using kOS.AddOns;
 using kOS.Safe.Utilities;
 using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Suffixed;
-using kOS;
 using Astrogator;
 using System.Reflection;
 using System.Linq;
-using kOS.Screen;
 
-namespace AstrogatorKOS {
+namespace kOS.AddOns.kOSAstrogator {
     using static ViewTools;
 
     /// <summary>
@@ -39,19 +36,19 @@ namespace AstrogatorKOS {
             AddSuffix("help", new NoArgsVoidSuffix(PrintHelp));
             AddSuffix("version", new NoArgsSuffix<StringValue>(GetAstrogatorVersion));
             AddSuffix("create", new VarArgsSuffix<Node, Structure>(CreateTransfer));
-            AddSuffix("ejectionBurn", new OneArgsSuffix<BurnModelStructure, BodyTarget>(CalculateEjectionBurn));
+            AddSuffix("calculateBurns", new OneArgsSuffix<ListValue, BodyTarget>(CalculateBurns));
         }
 
         #region suffix_functions
         private void PrintHelp()
         {
-            shared.Screen.Print("AstrogatorKOS Help: addons:astrogator:<cmd>");
-            shared.Screen.Print("        help: this help message");
-            shared.Screen.Print("     version: return Astrogator version string");
-            shared.Screen.Print("      create: [dest, genPlaneChange] create nodes to get to dest body");
-            shared.Screen.Print("              dest is any body (required),");
-            shared.Screen.Print("              genPlaneChange generates additional node (def: false)");
-            shared.Screen.Print("ejectionBurn: Return BurnModel for calculated ejection Burn.");
+            shared.Screen.Print("kOS-Astrogator Help: addons:astrogator:<cmd>");
+            shared.Screen.Print("          help: this help message");
+            shared.Screen.Print("       version: return Astrogator version string");
+            shared.Screen.Print("        create: [dest, genPlaneChange] create nodes to get to dest body");
+            shared.Screen.Print("                dest is any body (required),");
+            shared.Screen.Print("                genPlaneChange generates additional node (def: true)");
+            shared.Screen.Print("calculateBurns: [dest] Calc and return List of BurnModels for ejection/plane changes.");
         }
 
         private StringValue GetAstrogatorVersion()
@@ -65,7 +62,7 @@ namespace AstrogatorKOS {
             // throw new kOS.Safe.Exceptions.KOSException("invalid resource type");
 
             BodyTarget dest = (BodyTarget) args[0];
-            bool paramGeneratePlaneChangeBurns = false;
+            bool paramGeneratePlaneChangeBurns = true;
             if (args.Length > 1) paramGeneratePlaneChangeBurns = (BooleanValue)args[1];
 
             // store old values
@@ -104,11 +101,15 @@ namespace AstrogatorKOS {
             return Node.FromExisting(shared.Vessel, model.ejectionBurn.node, shared);
         }
 
-        private BurnModelStructure CalculateEjectionBurn(BodyTarget dest)
+        private ListValue CalculateBurns(BodyTarget dest)
         {
+            ListValue burns = new ListValue();
             TransferModel model = new TransferModel(shared.Vessel, dest.Target);
             model.CalculateEjectionBurn();
-            return BurnModelStructure.Create(model.ejectionBurn, shared);
+            model.CalculatePlaneChangeBurn();
+            burns.Add(BurnModelStructure.Create(model.ejectionBurn, shared));
+            burns.Add(BurnModelStructure.Create(model.planeChangeBurn, shared));
+            return burns;
         }
         #endregion
 

@@ -1,32 +1,45 @@
 <Project>
   <PropertyGroup>
-    <AssemblyName>AstrogatorKOS</AssemblyName>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <AssemblyName>kOS-Astrogator</AssemblyName>
+    <RootNamespace>kOS_Astrogator</RootNamespace>
     <GameDataPath>..\GameData\</GameDataPath>
     <ChangelogFile>$(GameDataPath)$(AssemblyName)\$(AssemblyName)-Changelog.cfg</ChangelogFile>
     <ZipFile>..\$(AssemblyName).zip</ZipFile>
     <OutDir>$(GameDataPath)$(AssemblyName)\Plugins\</OutDir>
     <BaseIntermediateOutputPath>..\obj\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>..\obj\</IntermediateOutputPath>
-    <Configuration>Release</Configuration>
-  </PropertyGroup>
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-  <PropertyGroup>
-    <RootNamespace>AstrogatorKOS</RootNamespace>
     <ProjectGuid>{A0799ABF-B268-4BB7-A686-A26F3638AF91}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.3</LangVersion>
-    <TargetFramework>net472</TargetFramework>
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Optimize>true</Optimize>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>$(IntermediateOutputPath)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
-    <DocumentationFile>$(IntermediateOutputPath)$(AssemblyName).xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <!-- Private=false prevents the reference from being copied to the output directory -->
