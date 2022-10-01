@@ -4,13 +4,13 @@ using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Utilities;
 using kOS.Suffixed;
 
-namespace kOS.AddOns.kOSAstrogator
+namespace kOS.AddOns.kOSAstrogator.structure
 {
     /// <summary>
     /// A structure wrapper for BurnModel to allow kOS to interact with.
     /// </summary>
     [KOSNomenclature("BurnModel")]
-    public class BurnModelStructure : Structure
+    public class BurnModelStructure : kOS.Safe.Encapsulation.Structure
     {
         private readonly BurnModel model;
         private readonly SharedObjects shared;

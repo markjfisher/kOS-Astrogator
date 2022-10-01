@@ -8,9 +8,9 @@
 addons:astrogator:help.
 ```
 
-## Creating and calculating Transfer Burns
+## Transfers
 
-### Creating burn maneuver nodes to a target
+### `create(body, [shouldCreatePlanarChangeNode = true])` - Creating burn maneuver nodes to a target
 
 ```
 addons:astrogator:create(Mun).
@@ -20,17 +20,29 @@ This will create the main transfer and a plane change node, unless a second arg 
 which will then only create the primary burn node.
 
 
-### Calculating burn data (no nodes)
+### `calculateBurns(body)` - Calculating burn data (no nodes)
 
-It is possible to get the burn data for a transfer without creating the nodes with:
+This will calculate the burn data for a transfer without creating the , and return a list of BurnModel structures (up to 2)
 
 ```
-set nodeList to addons:astrogator:calculateBurns(Mun).
-print nodeList.
+set bms to addons:astrogator:calculateBurns(Mun).
+print bms.
+print bms[0]:prograde.
 ```
 
-This will produce a list of `BurnModel` objects (up to 2). The first is the starting burn,
-the second (if present) is the plane change burn.
+This will produce a list of `BurnModel` objects (up to 2). The first (if present) is the starting burn,
+the second (if present) is the plane change burn. See below for more information about BurnModel.
+
+## Physics
+
+The following functions are exposed from Astrogator's PhysicsTools
+
+- `deltaVToOrbit(body)` Calculate deltav to get a sensible orbit around body.
+- `speedAtPeriapsis(body, apo, peri)` Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.
+- `speedAtApoapsis(body, apo, peri)` Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.
+- `shipSpeedAtPeriapsis()` Ship speed at periapsis around current body.
+- `shipSpeedAtApoapsis()` Ship speed at apoapsis around current body.
+
 
 ## Structures
 
