@@ -115,36 +115,25 @@ addons:astrogator:help.
 
 ## Transfers
 
-### `create(body, [shouldCreatePlanarChangeNode = true])` - Creating burn maneuver nodes to a target
+| **Command** | **Return Type** | **Description** |
+|--------|--------|--------|
+| `create(body, [shouldCreatePlanarChangeNode = true])` | Node | Creates up to 2 Maneuver nodes for a tranfer to the target body |
+| `calculateBurns(body)` | List<BurnModel> | Calculates burn data (no nodes) for transfer to body |
 
-```
-addons:astrogator:create(Mun).
-```
-
-This will create the main transfer and a plane change node.
-When `shouldCreatePlanarChangeNode` is `false`, only the primary burn node is created.
-If conditions for transfer are not good, then no nodes will be created.
-
-### `calculateBurns(body)` - Calculating burn data (no nodes)
-
-This will calculate the burn data for a transfer without creating the node, and return a list of BurnModel structures (up to 2).
-Similarly to `create` values are only returned when transfer conditions meet respective conditions.
-
-```
-set bms to addons:astrogator:calculateBurns(Mun).
-print bms.
-print bms[0]:prograde.
-```
 
 ## Physics
 
 The following functions are exposed from Astrogator's PhysicsTools
 
-- `deltaVToOrbit(body)` Calculate deltav to get a sensible orbit around body.
-- `speedAtPeriapsis(body, apo, peri)` Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.
-- `speedAtApoapsis(body, apo, peri)` Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.
-- `shipSpeedAtPeriapsis()` Ship speed at periapsis around current body.
-- `shipSpeedAtApoapsis()` Ship speed at apoapsis around current body.
+| **Command** | **Return Type** | **Description** |
+|--------|--------|--------|
+
+
+|`deltaVToOrbit(body)` | double | Calculate deltav to get a sensible orbit around body.|
+|`speedAtPeriapsis(body, apo, peri)` | double | Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.|
+|`speedAtApoapsis(body, apo, peri)` | double | Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.|
+|`shipSpeedAtPeriapsis()` | double | Ship speed at periapsis around current body.|
+|`shipSpeedAtApoapsis()` | double | Ship speed at apoapsis around current body.|
 
 
 ## Structures
@@ -155,33 +144,33 @@ This is a class representing the Burn without having to create a node.
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| attime | double | When the burn would occur in UT |
-| prograde | double | The prograde element of the burn |
-| normal | double | The normal element of the burn |
-| radial | double | The radial element of the burn |
-| totalDV | double | The magnitude of the burn |
-| duration | double | The burn time |
-| toNode | Node | Creates a maneuver node with given values |
+| `attime` | double | When the burn would occur in UT |
+| `prograde` | double | The prograde element of the burn |
+| `normal` | double | The normal element of the burn |
+| `radial` | double | The radial element of the burn |
+| `totalDV` | double | The magnitude of the burn |
+| `duration` | double | The burn time |
+| `toNode` | Node | Creates a maneuver node with given values |
 
 ### TransferModel
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| destination | ITargetable | The body we're transferring to. |
-| transferDestination | ITargetable | The SOI that we're aiming at, possibly an ancestor of our ultimate destination if the user targeted a distant moon. |
-| transferParent | CelestialBody | The reference body of the transfer portion of our route. |
-| retrogradeTransfer | bool |  True if the transfer portion of this trajectory is retrograde, false otherwise. So for a retrograde Kerbin orbit, this is true for Mun and false for Duna. |
-| origin | ITargetable | The body we're transferring from. |
-| ejectionBurn | BurnModel | Representation of the initial burn to start the transfer. |
-| planeChangeBurn | BurnModel | Representation of the burn to change into the destination's orbital plane. |
-| ejectionBurnDuration | double | Number of seconds to complete this burn for current vessel |
-| calculateEjectionBurn | void | Calculates the ejectionBurn data for this transfer (runs when initialised, shouldn't need to run this) |
-| calculatePlaneChangeBurn | void | Calculates the planeChangeBurn data for this transfer (runs when initialised, shouldn't need to run this) |
-| getDuration | double | Calculate ejection burn duration |
-| haveEncounter | bool | Check whether the current vessel currently has an encounter with this transfer's destination. |
-| checkIfNodesDisappeared | void | Check whether the user opened any manuever node editing gizmos since the last tick |
-| createManeuvers | void | Turn this transfer's burns into user visible maneuver nodes. Same as Astrogator's UI node icons. |
-| warpToBurn | void | Warp to (near) the burn. Various results depending on where you are in time relative to the node. Cancels a warp if one is already going |
+| `destination` | ITargetable | The body we're transferring to. |
+| `transferDestination` | ITargetable | The SOI that we're aiming at, possibly an ancestor of our ultimate destination if the user targeted a distant moon. |
+| `transferParent` | CelestialBody | The reference body of the transfer portion of our route. |
+| `retrogradeTransfer` | bool |  True if the transfer portion of this trajectory is retrograde, false otherwise. So for a retrograde Kerbin orbit, this is true for Mun and false for Duna. |
+| `origin` | ITargetable | The body we're transferring from. |
+| `ejectionBurn` | BurnModel | Representation of the initial burn to start the transfer. |
+| `planeChangeBurn` | BurnModel | Representation of the burn to change into the destination's orbital plane. |
+| `ejectionBurnDuration` | double | Number of seconds to complete this burn for current vessel |
+| `calculateEjectionBurn` | void | Calculates the ejectionBurn data for this transfer (runs when initialised, shouldn't need to run this) |
+| `calculatePlaneChangeBurn` | void | Calculates the planeChangeBurn data for this transfer (runs when initialised, shouldn't need to run this) |
+| `getDuration` | double | Calculate ejection burn duration |
+| `haveEncounter` | bool | Check whether the current vessel currently has an encounter with this transfer's destination. |
+| `checkIfNodesDisappeared` | void | Check whether the user opened any manuever node editing gizmos since the last tick |
+| `createManeuvers` | void | Turn this transfer's burns into user visible maneuver nodes. Same as Astrogator's UI node icons. |
+| `warpToBurn` | void | Warp to (near) the burn. Various results depending on where you are in time relative to the node. Cancels a warp if one is already going |
 
 
 ### AstrogationModel
@@ -190,19 +179,19 @@ This is a class representing the same data that can be found in the Astrogator m
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| origin | ITargetable | Usually the ship, the origin of the astrogation data. |
-| transfers | Lexicon(string, TransferModel) | A lexicon of body names to TransferModels |
-| erorCondition | bool | Whether there's an issue with this model, e.g. inclination too high, or hyperbolic trajectory not on an inbound trajectory|
-| badInclination | bool | Does this have a bad inclination? Very large inclinations will not calculate |
-| retrogradeOrbit| bool | Is the orbit retrograde? |
-| inbound | bool | Are we on an inbound hyperbolic orbit? |
-| hyperbolicorbit | bool | Is the trajectory hyperbolic?  |
-| reset(ITargetable) | void | Re-initialises the model for the given origin |
-| checkIfNodesDisappeared | void  | Checks if either of the created nodes have been altered |
-| getDuration | void | Tells all transfers to refresh their durations |
-| activeTransfer | TranseferModel | Find the transfer that currently has an ejection burn instantiated as a real maneuver node, if any. |
-| activeEjectionBurn | BurnModel | Find the ejection burn that's currently instantiated as a real maneuver node, if any. |
-| activePlaneChangeBurn | BurnModel | Find the plane change burn that's currently instantiated as a real maneuver node, if any.  |
+| `origin` | ITargetable | Usually the ship, the origin of the astrogation data. |
+| `transfers` | Lexicon(string, TransferModel) | A lexicon of body names to TransferModels |
+| `erorCondition` | bool | Whether there's an issue with this model, e.g. inclination too high, or hyperbolic trajectory not on an inbound trajectory|
+| `badInclination` | bool | Does this have a bad inclination? Very large inclinations will not calculate |
+| `retrogradeOrbit | bool | Is the orbit retrograde? |
+| `inbound` | bool | Are we on an inbound hyperbolic orbit? |
+| `hyperbolicorbit` | bool | Is the trajectory hyperbolic?  |
+| `reset(ITargetable)` | void | Re-initialises the model for the given origin |
+| `checkIfNodesDisappeared` | void  | Checks if either of the created nodes have been altered |
+| `getDuration` | void | Tells all transfers to refresh their durations |
+| `activeTransfer` | TranseferModel | Find the transfer that currently has an ejection burn instantiated as a real maneuver node, if any. |
+| `activeEjectionBurn` | BurnModel | Find the ejection burn that's currently instantiated as a real maneuver node, if any. |
+| `activePlaneChangeBurn` | BurnModel | Find the plane change burn that's currently instantiated as a real maneuver node, if any.  |
 
 ### CelestialBody
 
