@@ -127,8 +127,6 @@ The following functions are exposed from Astrogator's PhysicsTools
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-
-
 |`deltaVToOrbit(body)` | double | Calculate deltav to get a sensible orbit around body.|
 |`speedAtPeriapsis(body, apo, peri)` | double | Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.|
 |`speedAtApoapsis(body, apo, peri)` | double | Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.|
