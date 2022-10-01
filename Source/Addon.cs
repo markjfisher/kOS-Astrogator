@@ -8,6 +8,8 @@ namespace kOS.AddOns.kOSAstrogator
 {
     using transfer;
     using info;
+    using kOS.AddOns.kOSAstrogator.structure;
+
     /// <summary>
     /// kOS integration for Astrogator
     /// </summary>
@@ -15,6 +17,10 @@ namespace kOS.AddOns.kOSAstrogator
     [KOSNomenclature("AstrogatorAddon")]
     public class KOSAstrogatorAddon : Addon
     {
+        /// <summary>
+        /// The Addon's name.
+        /// </summary>
+        public const string Name = "kOS-Astrogator";
 
         /// <summary>
         /// The class initializer
@@ -34,9 +40,10 @@ namespace kOS.AddOns.kOSAstrogator
             AddSuffix("help", new NoArgsVoidSuffix(() => Help.PrintHelp(shared)));
             AddSuffix("version", new NoArgsSuffix<StringValue>(() => Version.GetVersion()));
 
-            // creating transfers and info
+            // creating transfers
             AddSuffix("create", new OptionalArgsSuffix<Node>(CreateTransfer, new Safe.Encapsulation.Structure[] { null, BooleanValue.True }));
             AddSuffix("calculateBurns", new OneArgsSuffix<ListValue, BodyTarget>(CalculateBurns));
+            AddSuffix("astrogation", new NoArgsSuffix<AstrogationModelStructure>(() => Astrogation.CreateAstrogationModel(shared)));
 
             // physics
             AddSuffix("deltaVToOrbit", new OneArgsSuffix<ScalarDoubleValue, BodyTarget>(DeltaVToOrbit));

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using kOS.Suffixed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,5 +23,6 @@ namespace kOS.AddOns.kOSAstrogator
                                  select a).FirstOrDefault().assembly;
             return assembly != null;
         }
+
     }
 }

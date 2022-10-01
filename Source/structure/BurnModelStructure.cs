@@ -9,15 +9,15 @@ namespace kOS.AddOns.kOSAstrogator.structure
     /// <summary>
     /// A structure wrapper for BurnModel to allow kOS to interact with.
     /// </summary>
-    [KOSNomenclature("BurnModel")]
-    public class BurnModelStructure : kOS.Safe.Encapsulation.Structure
+    [KOSNomenclature("AstrogationBurnModel")]
+    public class BurnModelStructure : Structure
     {
         private readonly BurnModel model;
         private readonly SharedObjects shared;
 
         private BurnModelStructure(BurnModel model, SharedObjects shared)
         {
-            this.model = model;
+            this.model = model ?? new BurnModel(0, 0);
             this.shared = shared;
             InitializeSuffixes();
         }
@@ -28,11 +28,7 @@ namespace kOS.AddOns.kOSAstrogator.structure
         /// <param name="model">The BurnModel to wrap</param>
         /// <param name="shared">The shared object</param>
         /// <returns>A BurnModel Structure usable in kOS</returns>
-        public static BurnModelStructure Create(BurnModel model, SharedObjects shared)
-        {
-            BurnModelStructure burnModelStructure = new BurnModelStructure(model, shared);
-            return burnModelStructure;
-        }
+        public static BurnModelStructure Create(BurnModel model, SharedObjects shared) => new BurnModelStructure(model, shared);
 
         private void InitializeSuffixes()
         {
@@ -84,6 +80,7 @@ namespace kOS.AddOns.kOSAstrogator.structure
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
+            if (model == null) return false;
             BurnModelStructure bms = (BurnModelStructure)obj;
             return bms.model.atTime == model.atTime &&
                 bms.model.prograde == model.prograde &&
@@ -95,6 +92,7 @@ namespace kOS.AddOns.kOSAstrogator.structure
         /// <inheritdoc/>
         public override int GetHashCode()
         {
+            if (model == null) return 0;
             return base.GetHashCode();
         }
     }
