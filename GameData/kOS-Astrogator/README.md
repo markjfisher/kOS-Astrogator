@@ -108,23 +108,23 @@ kerbTF:ejectionBurn:toNode.
 #### Transfers to other vessels
 
 Using the astrogation data, you can also create transfers to targets other than Celestial bodies.
+
 Here's an example session doing that, from a ship in an orbit with a planet that has another target ship.
-Although it also works if the target is orbiting another body.
+this should produce a very acurate transfer with a good close approach to the target.
+
+Although it does also work if the target is orbiting another body, in that case you will have to adjust the
+node as you will get a transfer that enters the SOI of the target's body, and will pass by the vessel, but
+probably on an exiting trajectory.
 
 ```
-// Assuming you have targetted "rescue craft 1" from map view: TODO, how to do this in kOS?
+set target to "rescue craft 1".
 set a to addons:astrogator:astrogation.
-print a:transfers:keys.
-LIST of 9 items:
-[0] =
-  ["value"] = "rescue craft 1"
-[1] =
-  ["value"] = "Mun"
-// ... <snip>
-
-// Note: because there are spaces in the name, we have to use standard lexicon access
 set t to a:transfers["rescue craft 1"].
+t:ejectionBurn:toNode.
+```
 
+All the objects returned from kOS-Astrogator have fairly useful toString() methods for inspection:
+```
 print t.
 
 TransferModel(
@@ -139,11 +139,6 @@ TransferModel(
 )
 
 // In the above, note there is only an ejectionBurn. The planChangeBurn is empty (atTime is 0).
-
-// now create a node for this transfer
-t:ejectionBurn:toNode.
-
-// use whatever method to execute the node.
 ```
 
 ## Help
