@@ -103,7 +103,47 @@ TransferModel(
 // Create a transfer node.
 // This is functionally equivalent to "addons:astrographer:create(Kerbin, false)"
 kerbTF:ejectionBurn:toNode.
+```
 
+#### Transfers to other vessels
+
+Using the astrogation data, you can also create transfers to targets other than Celestial bodies.
+Here's an example session doing that, from a ship in an orbit with a planet that has another target ship.
+Although it also works if the target is orbiting another body.
+
+```
+// Assuming you have targetted "rescue craft 1" from map view: TODO, how to do this in kOS?
+set a to addons:astrogator:astrogation.
+print a:transfers:keys.
+LIST of 9 items:
+[0] =
+  ["value"] = "rescue craft 1"
+[1] =
+  ["value"] = "Mun"
+// ... <snip>
+
+// Note: because there are spaces in the name, we have to use standard lexicon access
+set t to a:transfers["rescue craft 1"].
+
+print t.
+
+TransferModel(
+          destination: ITargetable(name: rescue craft 1, orbit: ORBIT of Kerbin)
+  transferDestination: ITargetable(name: rescue craft 1, orbit: ORBIT of Kerbin)
+       transferParent: CelestialBody(name: Kerbin)
+   retrogradeTransfer: False
+               origin: ITargetable(name: Test Bot Probe, orbit: ORBIT of Kerbin)
+         ejectionBurn: BurnModel(attime: 11745590.7149992, prograde: -236.49876181844, normal: 0, radial: 0, totaldv: 236.49876181844, duration: 107.648758862728)
+      planeChangeburn: BurnModel(attime: 0, prograde: 0, normal: 0, radial: 0, totaldv: 0, duration: NaN)
+ ejectionBurnDuration: 107.648758862728
+)
+
+// In the above, note there is only an ejectionBurn. The planChangeBurn is empty (atTime is 0).
+
+// now create a node for this transfer
+t:ejectionBurn:toNode.
+
+// use whatever method to execute the node.
 ```
 
 ## Help
