@@ -10,8 +10,6 @@ The module is available in CKAN, but if you wish to check out and build it yours
 
 ### Visual Studio 2022 in Windows
 
-Create 2 symlinks in [Source](Source) as follows:
-
 #### Copy required mods to a folder on your machine
 Unpack the following mods as normal from installation zips, or copy them from KSP's mods folder.
 
