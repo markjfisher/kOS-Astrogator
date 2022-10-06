@@ -161,7 +161,7 @@ This is a class representing the Burn without having to create a node.
 As kOS cannot return null, NAN, or infinity, negative values are used to indicate certain error conditions from Astrogator when reading the duration field.
 
 | **Return Value** | **Meaning** |
-|--------|--------|--------|
+|--------|--------|
 | -1 | DeltaV calculation not available |
 | -2 | Cannot perform burns |
 | -3 | Not enough fuel to perform transfer |
