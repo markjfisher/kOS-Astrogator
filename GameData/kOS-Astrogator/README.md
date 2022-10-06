@@ -211,7 +211,7 @@ This is a class representing the same data that can be found in the Astrogator m
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
 | `transfers` | Lexicon(string, TransferModel) | A lexicon of body names to TransferModels |
-| `erorCondition` | bool | Whether there's an issue with this model, e.g. inclination too high, or hyperbolic trajectory not on an inbound trajectory|
+| `errorCondition` | bool | Whether there's an issue with this model, e.g. inclination too high, or hyperbolic trajectory not on an inbound trajectory|
 | `badInclination` | bool | Does this have a bad inclination? Very large inclinations will not calculate |
 | `retrogradeOrbit` | bool | Is the orbit retrograde? |
 | `inbound` | bool | Are we on an inbound hyperbolic orbit? |
