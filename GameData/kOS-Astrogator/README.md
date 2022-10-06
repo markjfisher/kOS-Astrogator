@@ -161,6 +161,7 @@ This is a class representing the Burn without having to create a node.
 As kOS cannot return null, NAN, or infinity, negative values are used to indicate certain error conditions from Astrogator when reading the duration field.
 
 | **Return Value** | **Meaning** |
+|--------|--------|--------|
 | -1 | DeltaV calculation not available |
 | -2 | Cannot perform burns |
 | -3 | Not enough fuel to perform transfer |
@@ -212,7 +213,7 @@ This is a class representing the same data that can be found in the Astrogator m
 | `transfers` | Lexicon(string, TransferModel) | A lexicon of body names to TransferModels |
 | `erorCondition` | bool | Whether there's an issue with this model, e.g. inclination too high, or hyperbolic trajectory not on an inbound trajectory|
 | `badInclination` | bool | Does this have a bad inclination? Very large inclinations will not calculate |
-| `retrogradeOrbit | bool | Is the orbit retrograde? |
+| `retrogradeOrbit` | bool | Is the orbit retrograde? |
 | `inbound` | bool | Are we on an inbound hyperbolic orbit? |
 | `hyperbolicorbit` | bool | Is the trajectory hyperbolic?  |
 | `reset(ITargetable)` | None | Re-initialises the model for the given origin |
