@@ -49,7 +49,7 @@ set n0 to bms[0]:toNode.
 
 // inspecting in the map view will note the DV requirement is too great for the ship being used, this is indicated by duration = -3.
 
-// Values are doubles that can be used in calculations:
+// Values are standard kOS scalable values that can be used in calculations:
 print bms[0]:totalDV / 1024.
 ```
 
@@ -88,17 +88,7 @@ Now we can interact with the data returned.
 set kerbTF to tfs:Kerbin.
 print kerbTF.
 
-TransferModel(
-          destination: ITargetable(name: Kerbin, orbit: ORBIT of Sun)
-  transferDestination: ITargetable(null)
-       transferParent: CelestialBody(null)
-   retrogradeTransfer: False
-               origin: ITargetable(name: minmus science space station, orbit: ORBIT of Minmus)
-         ejectionBurn: BurnModel(attime: 11134548.9941572, prograde: 159.254365966869, normal: 0, radial: 0, totaldv: 159.254365966869, duration: 22.9794811408494)
-      planeChangeburn: BurnModel(attime: 0, prograde: 0, normal: 0, radial: 0, totaldv: 0, duration: NaN)
- ejectionBurnDuration: 22.9794811408494
-)
-
+TransferModel("Kerbin")
 
 // Create a transfer node.
 // This is functionally equivalent to "addons:astrographer:create(Kerbin, false)"
@@ -123,24 +113,6 @@ set t to a:transfers["rescue craft 1"].
 t:ejectionBurn:toNode.
 ```
 
-All the objects returned from kOS-Astrogator have fairly useful toString() methods for inspection:
-```
-print t.
-
-TransferModel(
-          destination: ITargetable(name: rescue craft 1, orbit: ORBIT of Kerbin)
-  transferDestination: ITargetable(name: rescue craft 1, orbit: ORBIT of Kerbin)
-       transferParent: CelestialBody(name: Kerbin)
-   retrogradeTransfer: False
-               origin: ITargetable(name: Test Bot Probe, orbit: ORBIT of Kerbin)
-         ejectionBurn: BurnModel(attime: 11745590.7149992, prograde: -236.49876181844, normal: 0, radial: 0, totaldv: 236.49876181844, duration: 107.648758862728)
-      planeChangeburn: BurnModel(attime: 0, prograde: 0, normal: 0, radial: 0, totaldv: 0, duration: NaN)
- ejectionBurnDuration: 107.648758862728
-)
-
-// In the above, note there is only an ejectionBurn. The planChangeBurn is empty (atTime is 0).
-```
-
 ## Help
 
 This will print a link to this page.
@@ -152,9 +124,10 @@ addons:astrogator:help.
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| `create(body, [shouldCreatePlanarChangeNode = true])` | Node | Creates up to 2 Maneuver nodes for a tranfer to the target body |
+| `create(body, [shouldCreatePlanarChangeNode = true])` | Node | Creates up to 2 Maneuver nodes for a transfer to the target body |
 | `calculateBurns(body)` | List<BurnModel> | Calculates burn data (no nodes) for transfer to body |
 
+These are the primary interface for calculating and creating nodes to transfer to a target body. Astrogator will usually generate 2 items representing an initial DV burn to exit the current body and target the destination, with an additional smaller "plane change" to adjust for plane changes (if required). Thus you may need to execute both nodes to achieve the best results, or cater for them in any subsequent calculations you perform.
 
 ## Physics
 
@@ -162,11 +135,11 @@ The following functions are exposed from Astrogator's PhysicsTools
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-|`deltaVToOrbit(body)` | double | Calculate deltav to get a sensible orbit around body.|
-|`speedAtPeriapsis(body, apo, peri)` | double | Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.|
-|`speedAtApoapsis(body, apo, peri)` | double | Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.|
-|`shipSpeedAtPeriapsis()` | double | Ship speed at periapsis around current body.|
-|`shipSpeedAtApoapsis()` | double | Ship speed at apoapsis around current body.|
+|`deltaVToOrbit(body)` | ScalarDoubleValue | Calculate deltav to get a sensible orbit around body.|
+|`speedAtPeriapsis(body, apo, peri)` | ScalarDoubleValue | Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.|
+|`speedAtApoapsis(body, apo, peri)` | ScalarDoubleValue | Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.|
+|`shipSpeedAtPeriapsis()` | ScalarDoubleValue | Ship speed at periapsis around current body.|
+|`shipSpeedAtApoapsis()` | ScalarDoubleValue | Ship speed at apoapsis around current body.|
 
 
 ## Structures
@@ -177,34 +150,58 @@ This is a class representing the Burn without having to create a node.
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| `attime` | double | When the burn would occur in UT |
-| `prograde` | double | The prograde element of the burn |
-| `normal` | double | The normal element of the burn |
-| `radial` | double | The radial element of the burn |
-| `totalDV` | double | The magnitude of the burn |
-| `duration` | double | The burn time |
+| `attime` | ScalarDoubleValue | When the burn would occur in UT |
+| `prograde` | ScalarDoubleValue | The prograde element of the burn |
+| `normal` | ScalarDoubleValue | The normal element of the burn |
+| `radial` | ScalarDoubleValue | The radial element of the burn |
+| `totalDV` | ScalarDoubleValue | The magnitude of the burn |
+| `duration` | ScalarDoubleValue | The burn time |
 | `toNode` | Node | Creates a maneuver node with given values |
+
+As kOS cannot return null, NAN, or infinity, negative values are used to indicate certain error conditions from Astrogator when reading the duration field.
+
+| **Return Value** | **Meaning** |
+| -1 | DeltaV calculation not available |
+| -2 | Cannot perform burns |
+| -3 | Not enough fuel to perform transfer |
 
 ### TransferModel
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| `destination` | ITargetable | The body we're transferring to. |
-| `transferDestination` | ITargetable | The SOI that we're aiming at, possibly an ancestor of our ultimate destination if the user targeted a distant moon. |
-| `transferParent` | CelestialBody | The reference body of the transfer portion of our route. |
+| `destination` | TransferTarget | Vessel or Body we're transferring to. |
+| `transferDestination` | TransferTarget | Vessel or Body where the destination is. Targetting another vessel in the ship's current orbit will return the target vessel, else the target's body it is around |
+| `transferParent` | Body | The reference body of the transfer portion of our route. |
 | `retrogradeTransfer` | bool |  True if the transfer portion of this trajectory is retrograde, false otherwise. So for a retrograde Kerbin orbit, this is true for Mun and false for Duna. |
-| `origin` | ITargetable | The body we're transferring from. |
 | `ejectionBurn` | BurnModel | Representation of the initial burn to start the transfer. |
 | `planeChangeBurn` | BurnModel | Representation of the burn to change into the destination's orbital plane. |
-| `ejectionBurnDuration` | double | Number of seconds to complete this burn for current vessel |
-| `calculateEjectionBurn` | void | Calculates the ejectionBurn data for this transfer (runs when initialised, shouldn't need to run this) |
-| `calculatePlaneChangeBurn` | void | Calculates the planeChangeBurn data for this transfer (runs when initialised, shouldn't need to run this) |
-| `getDuration` | double | Calculate ejection burn duration |
+| `ejectionBurnDuration` | ScalarDoubleValue | Number of seconds to complete this burn for current vessel |
+| `calculateEjectionBurn` | None | Calculates the ejectionBurn data for this transfer (runs when initialised, shouldn't need to run this) |
+| `calculatePlaneChangeBurn` | None | Calculates the planeChangeBurn data for this transfer (runs when initialised, shouldn't need to run this) |
+| `getDuration` | ScalarDoubleValue | Calculate ejection burn duration |
 | `haveEncounter` | bool | Check whether the current vessel currently has an encounter with this transfer's destination. |
-| `checkIfNodesDisappeared` | void | Check whether the user opened any manuever node editing gizmos since the last tick |
-| `createManeuvers` | void | Turn this transfer's burns into user visible maneuver nodes. Same as Astrogator's UI node icons. |
-| `warpToBurn` | void | Warp to (near) the burn. Various results depending on where you are in time relative to the node. Cancels a warp if one is already going |
+| `checkIfNodesDisappeared` | None | Check whether the user opened any manuever node editing gizmos since the last tick |
+| `createManeuvers` | None | Turn this transfer's burns into user visible maneuver nodes. Same as Astrogator's UI node icons. |
+| `warpToBurn` | None | Warp to (near) the burn. Various results depending on where you are in time relative to the node. Cancels a warp if one is already going |
 
+#### An example of a Transfer Model and its Trasfer Targets.
+
+An example targetting Eve's moon Gilly from a craft in orbit of Kerbin:
+
+```
+> set target to "Gilly".
+> set a to addons:astrogator.astrogation.
+> set t to a:transfers:Gilly.
+
+> print t:destination.
+BodyTransferTarget("Gilly")
+
+> print t:transferDestination.
+BodyTransferTarget("Eve")
+
+> print t:transferParent.
+BODY("Sun").
+```
 
 ### AstrogationModel
 
@@ -212,27 +209,43 @@ This is a class representing the same data that can be found in the Astrogator m
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| `origin` | ITargetable | Usually the ship, the origin of the astrogation data. |
 | `transfers` | Lexicon(string, TransferModel) | A lexicon of body names to TransferModels |
 | `erorCondition` | bool | Whether there's an issue with this model, e.g. inclination too high, or hyperbolic trajectory not on an inbound trajectory|
 | `badInclination` | bool | Does this have a bad inclination? Very large inclinations will not calculate |
 | `retrogradeOrbit | bool | Is the orbit retrograde? |
 | `inbound` | bool | Are we on an inbound hyperbolic orbit? |
 | `hyperbolicorbit` | bool | Is the trajectory hyperbolic?  |
-| `reset(ITargetable)` | void | Re-initialises the model for the given origin |
-| `checkIfNodesDisappeared` | void  | Checks if either of the created nodes have been altered |
-| `getDuration` | void | Tells all transfers to refresh their durations |
+| `reset(ITargetable)` | None | Re-initialises the model for the given origin |
+| `checkIfNodesDisappeared` | None | Checks if either of the created nodes have been altered |
+| `getDuration` | None | Tells all transfers to refresh their durations |
 | `activeTransfer` | TranseferModel | Find the transfer that currently has an ejection burn instantiated as a real maneuver node, if any. |
 | `activeEjectionBurn` | BurnModel | Find the ejection burn that's currently instantiated as a real maneuver node, if any. |
 | `activePlaneChangeBurn` | BurnModel | Find the plane change burn that's currently instantiated as a real maneuver node, if any.  |
 
-### CelestialBody
+### TransferTarget
 
-This is a mostly complete wrapper of the KSP CelestialBody type.
+These are the targets of transfers and either contain a Body or a Vessel.
 
-All methods that return simple types or Orbits/Vectors have the same name as their counterpart on the real type.
+The `isVessel` arguement can be used to determine which it is, rather than using typename.
 
-See https://anatid.github.io/XML-Documentation-for-the-KSP-API/class_celestial_body.html for full documentation of the wrapped class.
+#### BodyTransferTarget
 
-This is only used in TransferModel.transferParent.
+In a scenario where you are plotting transfers to bodies, this represents those targets.
 
+| **Command** | **Return Type** | **Description** |
+|--------|--------|--------|
+| `name` | String | The body's Name |
+| `displayName` | String | The body's Display Name |
+| `isVessel` | bool | Always False. This is to easily tell if the TransferTarget is a Body or Vessel rather than looking at typename |
+| `body` | BodyTarget | The body representing the target of the transfer. |
+
+#### VesselTransferTarget
+
+In a scenario where you are plotting transfers to other vessels, this represents those targets. e.g. Calculating a tranfer to a target probe in this or another body's orbit.
+
+| **Command** | **Return Type** | **Description** |
+|--------|--------|--------|
+| `name` | String | The vessel's Name |
+| `displayName` | String | The vessel's Display Name |
+| `isVessel` | bool | Always True. This is to easily tell if the TransferTarget is a Body or Vessel rather than looking at typename |
+| `vessel` | VesselTarget | The vessel representing the target of the transfer. |

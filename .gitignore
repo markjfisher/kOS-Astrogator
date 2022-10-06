@@ -3,6 +3,7 @@ obj/
 
 # Binary files
 *.dll
+*.pdb
 
 # Compiled mod file
 *.zip

@@ -3,6 +3,7 @@ using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Utilities;
 using kOS.Suffixed;
+using System;
 
 namespace kOS.AddOns.kOSAstrogator.structure
 {
@@ -53,9 +54,10 @@ namespace kOS.AddOns.kOSAstrogator.structure
         {
             // kOS doesn't do NaN/null/infinity, so convert to "special" values.
             double? duration = model.Duration(shared.Vessel.VesselDeltaV);
-            if (!duration.HasValue) return -1.0;                      // Not Ready
-            if (duration == double.NaN) return -2.0;                  // Can't burn at all
-            if (duration == double.PositiveInfinity) return -3.0;     // Not enough Fuel
+            
+            if (!duration.HasValue) return -1.0;                          // Not Ready
+            if (Double.IsNaN(duration.Value)) return -2.0;                // Can't burn at all
+            if (Double.IsPositiveInfinity(duration.Value)) return -3.0;   // Not enough Fuel
             return duration.Value;
         }
 
@@ -72,28 +74,6 @@ namespace kOS.AddOns.kOSAstrogator.structure
                 CalculateDuration().GetDoubleValue()
             );
 
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            if (model == null) return false;
-            BurnModelStructure bms = (BurnModelStructure)obj;
-            return bms.model.atTime == model.atTime &&
-                bms.model.prograde == model.prograde &&
-                bms.model.normal == model.normal &&
-                bms.model.radial == model.radial &&
-                bms.model.totalDeltaV == model.totalDeltaV;
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            if (model == null) return 0;
-            return base.GetHashCode();
         }
     }
 }

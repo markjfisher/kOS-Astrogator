@@ -34,7 +34,6 @@ namespace kOS.AddOns.kOSAstrogator.structure
 
         private void InitializeSuffixes()
         {
-            AddSuffix("origin", new Suffix<ITargetableStructure>(() => ITargetableStructure.Create(model.origin, shared)));
             AddSuffix("transfers", new NoArgsSuffix<Lexicon>(() => GetTransfers(), "Gets calculated Astrogator Transfers"));
             AddSuffix("ErrorCondition", new Suffix<BooleanValue>(() => model.ErrorCondition));
             AddSuffix("badInclination", new Suffix<BooleanValue>(() => model.badInclination));
@@ -42,13 +41,12 @@ namespace kOS.AddOns.kOSAstrogator.structure
             AddSuffix("inbound", new Suffix<BooleanValue>(() => model.inbound));
             AddSuffix("hyperbolicOrbit", new Suffix<BooleanValue>(() => model.hyperbolicOrbit));
 
-            AddSuffix("Reset", new OneArgsSuffix<ITargetableStructure>((o) => model.Reset(o.target)));
+            AddSuffix("Reset", new OneArgsSuffix<TransferTarget>((o) => model.Reset(o.target)));
             AddSuffix("CheckIfNodesDisappeared", new NoArgsVoidSuffix(() => model.CheckIfNodesDisappeared()));
             AddSuffix("GetDurations", new NoArgsVoidSuffix(() => model.GetDurations()));
             AddSuffix("ActiveTransfer", new Suffix<TransferModelStructure>(() => TransferModelStructure.Create(model.ActiveTransfer, shared)));
             AddSuffix("ActiveEjectionBurn", new Suffix<BurnModelStructure>(() => BurnModelStructure.Create(model.ActiveEjectionBurn, shared)));
             AddSuffix("ActivePlaneChangeBurn", new Suffix<BurnModelStructure>(() => BurnModelStructure.Create(model.ActivePlaneChangeBurn, shared)));
-
         }
 
         private Lexicon GetTransfers()
@@ -64,14 +62,10 @@ namespace kOS.AddOns.kOSAstrogator.structure
         /// <inheritdoc/>
         public override string ToString()
         {
-            if (model == null) return "AstrogationModel(null)";
+            if (model == null) return "AstrogationModel(none)";
 
             Lexicon l = GetTransfers();
-            string transfersString = "Lex[" + string.Join(", ", l.Keys) + "]";
-            string s = string.Format("AstrogationModel(origin: {0}, transfers: {1})",
-                ITargetableStructure.Create(model.origin, shared),
-                transfersString
-            );
+            string s = string.Format("Astrogation(\"{0}\")", string.Join(", ", l.Keys));
 
             return s;
         }
