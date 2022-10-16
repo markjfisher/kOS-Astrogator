@@ -9,6 +9,7 @@ namespace kOS.AddOns.kOSAstrogator
     using transfer;
     using info;
     using kOS.AddOns.kOSAstrogator.structure;
+    using kOS.AddOns.kOSAstrogator.orbit;
 
     /// <summary>
     /// kOS integration for Astrogator
@@ -42,31 +43,27 @@ namespace kOS.AddOns.kOSAstrogator
 
             // creating transfers
             AddSuffix("create", new OptionalArgsSuffix<Node>(CreateTransfer, new Safe.Encapsulation.Structure[] { null, BooleanValue.True }));
-            AddSuffix("calculateBurns", new OneArgsSuffix<ListValue, BodyTarget>(CalculateBurns));
+            AddSuffix("calculateBurns", new OneArgsSuffix<ListValue, BodyTarget>((dest) => Transfers.CalculateBurns(shared, dest)));
             AddSuffix("astrogation", new NoArgsSuffix<AstrogationModelStructure>(() => Astrogation.CreateAstrogationModel(shared)));
 
             // physics
-            AddSuffix("deltaVToOrbit", new OneArgsSuffix<ScalarDoubleValue, BodyTarget>(DeltaVToOrbit));
-            AddSuffix("speedAtPeriapsis", new ThreeArgsSuffix<ScalarDoubleValue, BodyTarget, ScalarValue, ScalarValue>(SpeedAtPeriapsis));
-            AddSuffix("speedAtApoapsis", new ThreeArgsSuffix<ScalarDoubleValue, BodyTarget, ScalarValue, ScalarValue>(SpeedAtApoapsis));
-            AddSuffix("shipSpeedAtPeriapsis", new NoArgsSuffix<ScalarDoubleValue>(ShipSpeedAtPeriapsis));
-            AddSuffix("shipSpeedAtApoapsis", new NoArgsSuffix<ScalarDoubleValue>(ShipSpeedAtApoapsis));
+            AddSuffix("deltaVToOrbit", new OneArgsSuffix<ScalarDoubleValue, BodyTarget>((body) => PhysicsTools.DeltaVToOrbit(body.Body)));
+            AddSuffix("speedAtPeriapsis", new ThreeArgsSuffix<ScalarDoubleValue, BodyTarget, ScalarValue, ScalarValue>((body, apopapsis, periapsis) => PhysicsTools.SpeedAtPeriapsis(body.Body, apopapsis.GetDoubleValue(), periapsis.GetDoubleValue())));
+            AddSuffix("speedAtApoapsis", new ThreeArgsSuffix<ScalarDoubleValue, BodyTarget, ScalarValue, ScalarValue>((body, apopapsis, periapsis) => PhysicsTools.SpeedAtApoapsis(body.Body, apopapsis.GetDoubleValue(), periapsis.GetDoubleValue())));
+            AddSuffix("shipSpeedAtPeriapsis", new NoArgsSuffix<ScalarDoubleValue>(() => PhysicsTools.SpeedAtPeriapsis(shared.Vessel.mainBody, shared.Vessel.orbit.ApR, shared.Vessel.orbit.PeR)));
+            AddSuffix("shipSpeedAtApoapsis", new NoArgsSuffix<ScalarDoubleValue>(() => PhysicsTools.SpeedAtApoapsis(shared.Vessel.mainBody, shared.Vessel.orbit.ApR, shared.Vessel.orbit.PeR)));
+
+            // AN/DN calcs
+            AddSuffix("timeOfAN", new TwoArgsSuffix<ScalarDoubleValue, BodyTarget, BodyTarget>((a, b) => OrbitHelper.TimeOfAscendingNode(a.Orbit, b.Orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfDN", new TwoArgsSuffix<ScalarDoubleValue, BodyTarget, BodyTarget>((a, b) => OrbitHelper.TimeOfDescendingNode(a.Orbit, b.Orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfShipAN", new NoArgsSuffix<ScalarDoubleValue>(() => OrbitHelper.TimeOfAscendingNode(shared.Vessel.orbit, shared.Vessel.orbit.referenceBody.orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfShipDN", new NoArgsSuffix<ScalarDoubleValue>(() => OrbitHelper.TimeOfDescendingNode(shared.Vessel.orbit, shared.Vessel.orbit.referenceBody.orbit, Planetarium.GetUniversalTime())));
 
         }
 
         #region suffix_functions
-        // I don't know how to move these directly into the above, or make the above call different classes. Haven't learned enough about delegates yet.
-
         private Node CreateTransfer(params Safe.Encapsulation.Structure[] args) => Transfers.CreateManeuverNodes(shared, args);
-        private ListValue CalculateBurns(BodyTarget dest) => Transfers.CalculateBurns(shared, dest);
-        private ScalarDoubleValue DeltaVToOrbit(BodyTarget body) => PhysicsTools.DeltaVToOrbit(body.Body);
-        private ScalarDoubleValue SpeedAtPeriapsis(BodyTarget body, ScalarValue apopapsis, ScalarValue periapsis) => PhysicsTools.SpeedAtPeriapsis(body.Body, apopapsis.GetDoubleValue(), periapsis.GetDoubleValue());
-        private ScalarDoubleValue SpeedAtApoapsis(BodyTarget body, ScalarValue apopapsis, ScalarValue periapsis) => PhysicsTools.SpeedAtApoapsis(body.Body, apopapsis.GetDoubleValue(), periapsis.GetDoubleValue());
-        private ScalarDoubleValue ShipSpeedAtPeriapsis() => PhysicsTools.SpeedAtPeriapsis(shared.Vessel.mainBody, shared.Vessel.orbit.ApR, shared.Vessel.orbit.PeR);
-        private ScalarDoubleValue ShipSpeedAtApoapsis() => PhysicsTools.SpeedAtApoapsis(shared.Vessel.mainBody, shared.Vessel.orbit.ApR, shared.Vessel.orbit.PeR);
         #endregion
 
-        #region internal_function
-        #endregion
     }
 }

@@ -30,9 +30,9 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.2.0.0")]
-[assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: AssemblyVersion("0.2.1.0")]
+[assembly: AssemblyFileVersion("0.2.1.0")]
 
-[assembly: KSPAssembly("kOS-Astrogator", 0, 1)]
+[assembly: KSPAssembly("kOS-Astrogator", 0, 2)]
 [assembly: KSPAssemblyDependency("kOS", 1, 3)]
 [assembly: KSPAssemblyDependency("Astrogator", 0, 10)]

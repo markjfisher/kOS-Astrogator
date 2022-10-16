@@ -18,7 +18,7 @@ It also does not currently ensure that the transfer is not influenced by other b
 For instance, transfers to Minmus may be intercepted by the Mun, so you should check any nodes created
 do reach the intended SOI and make adjustments if not from within your scripts.
 
-This mod is a wrapper to Astrogator''s functionality, and does not do any changes to the calculated
+This mod is a wrapper to Astrogator's functionality, and does not do any changes to the calculated
 burns or nodes.
 
 ## Example usage
@@ -37,20 +37,20 @@ addons:astrogator:create(Minmus).
 
 ```
 // calculate the burns to Dres
-set bms to addons:astrogator:calculateBurns(Dres).
+> set bms to addons:astrogator:calculateBurns(Dres).
 
-print bms.
+> print bms.
 LIST of 2 items:
 [0] = "BurnModel(attime: 22003501.7260593, prograde: 1668.01710042658, normal: 0, radial: 0, totaldv: 1668.01710042658, duration: -3)"
 [1] = "BurnModel(attime: 26711517.2636837, prograde: -11.3082556944201, normal: -379.003641740976, radial: 6.3296734686348, totaldv: 379.225133484046, duration: 52.803860349922)"
 
 // Create a Maneuver node from the first BurnModel:
-set n0 to bms[0]:toNode.
+> set n0 to bms[0]:toNode.
 
 // inspecting in the map view will note the DV requirement is too great for the ship being used, this is indicated by duration = -3.
 
 // Values are standard kOS scalable values that can be used in calculations:
-print bms[0]:totalDV / 1024.
+> print bms[0]:totalDV / 1024.
 ```
 
 ### Using the Astrogation view data!
@@ -59,9 +59,9 @@ The data on the main UI interface to Astrogator can be accessed through the `ast
 
 ```
 // This example was taken from a ship in orbit of Minmus
-set a to addons:astrogator:astrogation.
-set tfs to a:transfers.
-print tfs:keys.
+> set a to addons:astrogator:astrogation.
+> set tfs to a:transfers.
+> print tfs:keys.
 
 LIST of 8 items:
 [0] =
@@ -85,14 +85,13 @@ Now we can interact with the data returned.
 
 ```
 // because this is a Lexicon, we can access the keys by the names
-set kerbTF to tfs:Kerbin.
-print kerbTF.
-
+> set kerbTF to tfs:Kerbin.
+> print kerbTF.
 TransferModel("Kerbin")
 
 // Create a transfer node.
 // This is functionally equivalent to "addons:astrographer:create(Kerbin, false)"
-kerbTF:ejectionBurn:toNode.
+> kerbTF:ejectionBurn:toNode.
 ```
 
 #### Transfers to other vessels
@@ -107,17 +106,24 @@ node as you will get a transfer that enters the SOI of the target's body, and wi
 probably on an exiting trajectory.
 
 ```
-set target to "rescue craft 1".
-set a to addons:astrogator:astrogation.
-set t to a:transfers["rescue craft 1"].
-t:ejectionBurn:toNode.
+> set target to "rescue craft 1".
+> set a to addons:astrogator:astrogation.
+> set t to a:transfers["rescue craft 1"].
+> t:ejectionBurn:toNode.
 ```
 
 ## Help
 
 This will print a link to this page.
 ```
-addons:astrogator:help.
+> addons:astrogator:help.
+```
+
+## Version
+
+This will print the vesion of kOS-Astrogator, and Astrogator.
+```
+> addons:astrogator:version.
 ```
 
 ## Transfers
@@ -138,9 +144,23 @@ The following functions are exposed from Astrogator's PhysicsTools
 |`deltaVToOrbit(body)` | ScalarDoubleValue | Calculate deltav to get a sensible orbit around body.|
 |`speedAtPeriapsis(body, apo, peri)` | ScalarDoubleValue | Generically calculate the speed at periapsis around given body with this apo/peri values in its orbit.|
 |`speedAtApoapsis(body, apo, peri)` | ScalarDoubleValue | Generically calculate the speed at apoapsis around given body with this apo/peri values in its orbit.|
-|`shipSpeedAtPeriapsis()` | ScalarDoubleValue | Ship speed at periapsis around current body.|
-|`shipSpeedAtApoapsis()` | ScalarDoubleValue | Ship speed at apoapsis around current body.|
+|`shipSpeedAtPeriapsis` | ScalarDoubleValue | Ship speed at periapsis around current body.|
+|`shipSpeedAtApoapsis` | ScalarDoubleValue | Ship speed at apoapsis around current body.|
 
+## Orbit Helpers
+
+| **Command** | **Return Type** | **Description** |
+|--------|--------|--------|
+| `timeOfAN(body, body)` | ScalarDoubleValue | Calculates the UT of Ascending node between 2 bodies orbits. |
+| `timeOfDN(body, body)` | ScalarDoubleValue | Calculates the UT of Descending node between 2 bodies orbits. |
+| `timeOfShipAN` | ScalarDoubleValue | Calculates the UT of Ascending node of ship in its current orbit. |
+| `timeOfShipDN` | ScalarDoubleValue | Calculates the UT of Descending node of ship in its current orbit. |
+
+Useful for adding nodes at AN/DN positions of ship it its orbit for performing maneuvers.
+
+```
+> add node(kos:astrogator:timeOfShipAN, 0, 0, 0).
+```
 
 ## Structures
 
@@ -150,7 +170,7 @@ This is a class representing the Burn without having to create a node.
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|
-| `attime` | ScalarDoubleValue | When the burn would occur in UT |
+| `atTime` | ScalarDoubleValue | When the burn would occur in UT |
 | `prograde` | ScalarDoubleValue | The prograde element of the burn |
 | `normal` | ScalarDoubleValue | The normal element of the burn |
 | `radial` | ScalarDoubleValue | The radial element of the burn |
@@ -242,7 +262,7 @@ In a scenario where you are plotting transfers to bodies, this represents those 
 
 #### VesselTransferTarget
 
-In a scenario where you are plotting transfers to other vessels, this represents those targets. e.g. Calculating a tranfer to a target probe in this or another body's orbit.
+In a scenario where you are plotting transfers to other vessels, this represents those targets. e.g. Calculating a transfer to a target probe in this or another body's orbit.
 
 | **Command** | **Return Type** | **Description** |
 |--------|--------|--------|

@@ -23,6 +23,5 @@ namespace kOS.AddOns.kOSAstrogator
                                  select a).FirstOrDefault().assembly;
             return assembly != null;
         }
-
     }
 }

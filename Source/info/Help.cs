@@ -12,7 +12,7 @@
         public static void PrintHelp(SharedObjects shared)
         {
             shared.Screen.Print("--------------------------------------------");
-            shared.Screen.Print("kOS-Astrogator");
+            shared.Screen.Print(Version.GetVersion());
             shared.Screen.Print("Usage: addons:astrogator:<cmd>");
             shared.Screen.Print("See https://github.com/markjfisher/kOS-Astrogator/blob/master/GameData/kOS-Astrogator/README.md");
             shared.Screen.Print("for full command details.");
