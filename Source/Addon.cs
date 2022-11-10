@@ -9,7 +9,6 @@ namespace kOS.AddOns.kOSAstrogator
     using transfer;
     using info;
     using kOS.AddOns.kOSAstrogator.structure;
-    using kOS.AddOns.kOSAstrogator.orbit;
 
     /// <summary>
     /// kOS integration for Astrogator
@@ -54,10 +53,10 @@ namespace kOS.AddOns.kOSAstrogator
             AddSuffix("shipSpeedAtApoapsis", new NoArgsSuffix<ScalarDoubleValue>(() => PhysicsTools.SpeedAtApoapsis(shared.Vessel.mainBody, shared.Vessel.orbit.ApR, shared.Vessel.orbit.PeR)));
 
             // AN/DN calcs
-            AddSuffix("timeOfAN", new TwoArgsSuffix<ScalarDoubleValue, BodyTarget, BodyTarget>((a, b) => OrbitHelper.TimeOfAscendingNode(a.Orbit, b.Orbit, Planetarium.GetUniversalTime())));
-            AddSuffix("timeOfDN", new TwoArgsSuffix<ScalarDoubleValue, BodyTarget, BodyTarget>((a, b) => OrbitHelper.TimeOfDescendingNode(a.Orbit, b.Orbit, Planetarium.GetUniversalTime())));
-            AddSuffix("timeOfShipAN", new NoArgsSuffix<ScalarDoubleValue>(() => OrbitHelper.TimeOfAscendingNode(shared.Vessel.orbit, shared.Vessel.orbit.referenceBody.orbit, Planetarium.GetUniversalTime())));
-            AddSuffix("timeOfShipDN", new NoArgsSuffix<ScalarDoubleValue>(() => OrbitHelper.TimeOfDescendingNode(shared.Vessel.orbit, shared.Vessel.orbit.referenceBody.orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfAN", new TwoArgsSuffix<ScalarDoubleValue, BodyTarget, BodyTarget>((a, b) => a.Orbit.TimeOfAscendingNode(b.Orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfDN", new TwoArgsSuffix<ScalarDoubleValue, BodyTarget, BodyTarget>((a, b) => a.Orbit.TimeOfDescendingNode(b.Orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfShipAN", new NoArgsSuffix<ScalarDoubleValue>(() => shared.Vessel.orbit.TimeOfAscendingNode(shared.Vessel.orbit.referenceBody.orbit, Planetarium.GetUniversalTime())));
+            AddSuffix("timeOfShipDN", new NoArgsSuffix<ScalarDoubleValue>(() => shared.Vessel.orbit.TimeOfDescendingNode(shared.Vessel.orbit.referenceBody.orbit, Planetarium.GetUniversalTime())));
 
         }
 

@@ -3,7 +3,6 @@ using kOS.AddOns.kOSAstrogator.structure;
 using kOS.Safe.Encapsulation;
 using kOS.Suffixed;
 
-
 namespace kOS.AddOns.kOSAstrogator.transfer
 {
     /// <summary>
